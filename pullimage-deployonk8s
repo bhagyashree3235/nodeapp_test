@@ -9,7 +9,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'bhagyashreep/nodeapp_test' // Docker image name
         DOCKER_IMAGE_TAG = 'latest' // Docker image tag
         KUBE_NAMESPACE = 'my-namespace' // Kubernetes namespace
-        DEPLOYMENT_YAML_FILE = 'deployment.yml' // Path to deployment YAML file
+        DEPLOYMENT_YAML_FILE = './deployment.yml' // Path to deployment YAML file
         REPO_URL = 'https://github.com/bhagyashree3235/nodeapp_test.git' // Repository URL
     }
 
