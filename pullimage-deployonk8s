@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent anyagent {
+        label 'Docker-Worker' 
+    }
 
     stages {
         stage('Pull Docker Image') {
