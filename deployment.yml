@@ -2,20 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nodeapp-deployment
-  labels:
-    app: nodeapp
 spec:
-  replicas: 1
+  replicas: 1 # Number of replicas/instances of your application
   selector:
     matchLabels:
       app: nodeapp
   template:
     metadata:
       labels:
-        app: nodeapp 
+        app: nodeapp
     spec:
       containers:
-      - name: nodeserver
-        image: thetips4you/nodeapp:latest
+      - name: nodeapp-container
+        image: bhagyashreep/nodeapp_test:latest # Docker image name and tag
         ports:
-        - containerPort: 3000
+        - containerPort: 4000 # Port on which your application listens
