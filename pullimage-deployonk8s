@@ -1,58 +1,17 @@
 pipeline {
-    agent {
-        label 'Docker-Worker' 
-    }
-
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        DOCKER_REGISTRY_URL = 'https://index.docker.io/v1/' // Docker Hub registry URL
-        DOCKER_IMAGE_NAME = 'bhagyashreep/nodeapp_test' // Docker image name
-        DOCKER_IMAGE_TAG = 'latest' // Docker image tag
-        KUBE_NAMESPACE = 'my-namespace' // Kubernetes namespace
-        DEPLOYMENT_YAML_FILE = './deployment.yml' // Path to deployment YAML file
-        REPO_URL = 'https://github.com/bhagyashree3235/nodeapp_test.git' // Repository URL
-    }
+    agent any
 
     stages {
-        stage('Login to Docker Hub') {
+        stage('Pull Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
-                        sh "docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD} ${DOCKER_REGISTRY_URL}"
-                    }   
+                    docker.image('bhagyashreep/nodeapp_test:latest').pull()
                 }
             }
         }
-
-       stage('Fetch Deployment YAML') {
-    steps {
-        script {
-            // Check if the directory exists
-            def repoDir = "${WORKSPACE}/repo"
-            if (fileExists(repoDir)) {
-                // If directory exists, navigate to it and pull changes
-                dir(repoDir) {
-                    sh "git pull"
-                }
-            } else {
-                // If directory doesn't exist, clone the repository
-                sh "git clone ${REPO_URL} ${repoDir}"
-            }
-            // Move the deployment YAML file to workspace
-            sh "mv ${repoDir}/deployment.yml ${WORKSPACE}/${DEPLOYMENT_YAML_FILE}"
-        }
-    }
-}
-
         stage('Deploy to Kubernetes') {
-            agent {
-                label 'kube-jworker' 
-            }
             steps {
-                script {
-                    // Apply Kubernetes deployment YAML
-                    sh "mkctl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML_FILE} --namespace=${KUBE_NAMESPACE}"
-                }
+                sh 'mkctl apply -f deployment.yml'
             }
         }
     }
