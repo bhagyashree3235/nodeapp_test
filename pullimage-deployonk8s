@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_IMAGE_NAME = 'bhagyashreep/nodeapp_test' // Docker image name
+        DOCKER_IMAGE_TAG = 'latest' // Docker image tag
+        KUBE_NAMESPACE = 'my-namespace' // Kubernetes namespace
+        DEPLOYMENT_YAML_FILE = 'deployment.yml' // Path to deployment YAML file
+    }
+
+    stages {
+        stage('Login to Docker Hub') {
+            steps {
+                // Assuming Docker Hub login is not required since image is already on Docker Hub
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            agent {
+                label 'kube-jworker' 
+            }
+            steps {
+                script {
+                    // Pull Docker image from Docker Hub
+                    sh "docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
+                    
+                    // Apply Kubernetes deployment YAML
+                    sh "kubectl apply -f ${DEPLOYMENT_YAML_FILE} --namespace=${KUBE_NAMESPACE}"
+                }
+            }
+        }
+    }
+}
