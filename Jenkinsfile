@@ -60,4 +60,3 @@ pipeline {
             sh "docker logout ${DOCKER_REGISTRY_URL}"
         }
     }
-}
