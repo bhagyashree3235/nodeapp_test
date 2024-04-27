@@ -25,9 +25,6 @@ pipeline {
      }
 
         stage('Deploy to Kubernetes') {
-            agent {
-                label 'kube-jworker' 
-            }
             steps {
                 script {
                     // Pull Docker image from Docker Hub
