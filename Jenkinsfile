@@ -39,24 +39,24 @@ pipeline {
                 }
             }
         }
-    }
-      stage('Deploy to Kubernetes') {
-          agent {
+        
+        stage('Deploy to Kubernetes') {
+            agent {
                 label 'kube-jworker' 
             }
             steps {
                 script {
                     // Apply Kubernetes deployment YAML
-                    sh "mkctl apply -f deployment.yml --namespace=${my-namespace}"
+                    sh "kubectl apply -f deployment.yml --namespace=${my-namespace}"
                 }
             }
         }
     }
 
-    
     post {
         always {
             // Log out from Docker Hub after pushing the image
             sh "docker logout ${DOCKER_REGISTRY_URL}"
         }
     }
+}
