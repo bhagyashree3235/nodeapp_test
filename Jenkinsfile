@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     // Apply Kubernetes deployment YAML
-                    sh "kubectl apply -f deployment.yml --namespace=${my-namespace}"
+                    sh "mkctl apply -f deployment.yml --namespace=${my-namespace}"
                 }
             }
         }
