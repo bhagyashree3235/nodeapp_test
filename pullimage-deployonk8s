@@ -16,7 +16,7 @@ pipeline {
                 label 'kube-jworker' 
             }
             steps {
-                sh 'mkctl apply -f deployment.yml'
+                sh 'kubectl apply -f deployment.yml'
             }
         }
     }
