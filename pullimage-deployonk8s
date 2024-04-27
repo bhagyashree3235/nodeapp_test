@@ -24,16 +24,25 @@ pipeline {
             }
         }
 
-        stage('Fetch Deployment YAML') {
-            steps {
-                script {
-                    // Clone the repository
-                    sh "git clone ${REPO_URL} repo"
-                    // Move the deployment YAML file to workspace
-                    sh "mv repo/deployment.yml ${WORKSPACE}/${DEPLOYMENT_YAML_FILE}"
+       stage('Fetch Deployment YAML') {
+    steps {
+        script {
+            // Check if the directory exists
+            def repoDir = "${WORKSPACE}/repo"
+            if (fileExists(repoDir)) {
+                // If directory exists, navigate to it and pull changes
+                dir(repoDir) {
+                    sh "git pull"
                 }
+            } else {
+                // If directory doesn't exist, clone the repository
+                sh "git clone ${REPO_URL} ${repoDir}"
             }
+            // Move the deployment YAML file to workspace
+            sh "mv ${repoDir}/deployment.yml ${WORKSPACE}/${DEPLOYMENT_YAML_FILE}"
         }
+    }
+}
 
         stage('Deploy to Kubernetes') {
             agent {
